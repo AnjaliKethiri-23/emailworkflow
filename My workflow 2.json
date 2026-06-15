@@ -1,0 +1,216 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a7fee810-3a15-468d-aef3-bb69c3390f32",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YSB8i1rMRrZyiSiN",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "hr",
+              "description": "Handles employee communication, recruitment, onboarding, attendance, leave management, and other human resources-related activities through the email workflow."
+            },
+            {
+              "category": "sales",
+              "description": "Manages customer inquiries, lead generation, follow-ups, sales opportunities, and client communications to support business growth and revenue generation."
+            },
+            {
+              "category": "admin",
+              "description": "Manages and monitors email workflow operations, reviews incoming requests, handles approvals, resolves issues, and ensures smooth communication between users and the system."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3bf51088-075f-4e70-bc1d-464aff384255",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        208
+      ],
+      "id": "d64de7c6-77d1-406b-a262-88fb97406e26",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PDWvpbEaga4Du4yY",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_2658865872844991495"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "3327e565-1e4d-4b4c-aed5-b23e2bca50b8",
+      "name": "Add label to message",
+      "webhookId": "47e660b8-339d-4674-9ee3-a3d1655ce836",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DpNCrmdSV1AdEAMk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_1455921335540106238"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        112
+      ],
+      "id": "569b9656-1aaf-484c-b356-070961ba55e4",
+      "name": "Add label to message1",
+      "webhookId": "47e660b8-339d-4674-9ee3-a3d1655ce836",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DpNCrmdSV1AdEAMk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_2681189221762356098"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        736,
+        304
+      ],
+      "id": "cf79aafe-3e4e-4885-a4e3-1f323f58b105",
+      "name": "Add label to message2",
+      "webhookId": "47e660b8-339d-4674-9ee3-a3d1655ce836",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "DpNCrmdSV1AdEAMk",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "67f1b6db-daf2-4286-8a6c-65fb95f9f9cd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef68ea18379d76c1e67b455bd25e386259c3ec8dcfd60ca3827faa844863068a"
+  },
+  "nodeGroups": [],
+  "id": "kKqhu0vgvt6uimID",
+  "tags": []
+}
